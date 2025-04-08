@@ -246,23 +246,23 @@ void PlayerControl(Context &ctx, Object &player, float dt) {
         return;
     }
     if (IsKeyDown(KEY_SPACE)) {
-        MakeJump(player, dt); 
+        MakeJump(player, dt);
     } 
     if (IsKeyPressed(KEY_J)) {
         ShootBullet(ctx, player, dt);   
     }
     Vector2 move= {0, 0};
     if (IsKeyDown(KEY_D)) {
-        move.x += 1; 
+        move.x += 1;
     }
     if (IsKeyDown(KEY_A)) {
-        move.x -= 1; 
+        move.x -= 1;
     }
     if (!move.x) {
         if (move.x > 0) {
             player.player.direction = Direction::RIGHT;
         }
-        if (move.x < 0) {
+        else if (move.x < 0) {
             player.player.direction = Direction::LEFT;
         }
     }
