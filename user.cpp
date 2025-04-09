@@ -145,7 +145,16 @@ void MakeJump(Object &obj, float dt) {}
 // Возможное решение может занимать примерно 5 строк.
 // Ваше решение может сильно отличаться.
 //
-void MoveCameraTowards(Context &ctx, Object &obj, float dt) {}
+void MoveCameraTowards(Context &ctx, Object &obj, float dt) {
+    Vector2 direction = Vector2Subtract(obj.position, ctx.camera_pos); //ищем направление от камеры к объекту
+    float distance = Vector2Length(direction); //вычисляем дистанцию 
+    Vector2 normalizedDirection = Vector2Normalize(direction); // нормализуем вектор направления, чтобы сделать его равным 1
+    if (distance > 0.1f) {
+        float camera_move_distance = fmin(2.0f * dt, distance);
+        Vector2 movement = Vector2Scale(normalizedDirection, camera_move_distance); //перемножение
+        ctx.camera_pos = Vector2Add(ctx.camera_pos, movement);
+    }
+}
 
 // Задание CheckPlayerDeath.
 //
