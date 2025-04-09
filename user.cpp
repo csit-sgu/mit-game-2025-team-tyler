@@ -1,5 +1,6 @@
 #include "user.hpp"
 #include "internal.hpp"
+
 #include <raymath.h>
 #include <raylib.h>
 
@@ -247,24 +248,21 @@ void PlayerControl(Context &ctx, Object &player, float dt) {
     }
     if (IsKeyDown(KEY_SPACE)) {
         MakeJump(player, dt);
-    } 
-    if (IsKeyPressed(KEY_J)) {
-        ShootBullet(ctx, player, dt);   
     }
-    Vector2 move= {0, 0};
+    if (IsKeyPressed(KEY_J)) {
+        ShootBullet(ctx, player, dt);
+    }
+    Vector2 move = {0, 0};
     if (IsKeyDown(KEY_D)) {
         move.x += 1;
     }
     if (IsKeyDown(KEY_A)) {
         move.x -= 1;
     }
-    if (!move.x) {
-        if (move.x > 0) {
-            player.player.direction = Direction::RIGHT;
-        }
-        else if (move.x < 0) {
-            player.player.direction = Direction::LEFT;
-        }
+    if (move.x > 0) {
+        player.player.direction = Direction::RIGHT;
+    } else if (move.x < 0) {
+        player.player.direction = Direction::LEFT;
     }
     player.position += move * player.player.speed * dt;
 }
