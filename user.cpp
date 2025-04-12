@@ -242,7 +242,30 @@ void EnemyAI(Object &enemy, Scene &scene, float dt) {}
 // Возможное решение может занимать примерно 16-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void PlayerControl(Context &ctx, Object &player, float dt) {}
+void PlayerControl(Context &ctx, Object &player, float dt) {
+    if (ctx.input_blocked) {
+        return;
+    }
+    if (IsKeyDown(KEY_SPACE)) {
+        MakeJump(player, dt);
+    }
+    if (IsKeyPressed(KEY_J)) {
+        ShootBullet(ctx, player, dt);
+    }
+    Vector2 move = {0, 0};
+    if (IsKeyDown(KEY_D)) {
+        move.x += 1;
+    }
+    if (IsKeyDown(KEY_A)) {
+        move.x -= 1;
+    }
+    if (move.x > 0) {
+        player.player.direction = Direction::RIGHT;
+    } else if (move.x < 0) {
+        player.player.direction = Direction::LEFT;
+    }
+    player.position += move * player.player.speed * dt;
+}
 
 // Задание ShootBullet.
 //
