@@ -304,7 +304,20 @@ void PlayerControl(Context &ctx, Object &player, float dt) {
 //
 // Возможное решение может занимать примерно 8-10 строк.
 //
-void ShootBullet(Context &ctx, Object &player, float dt) {}
+void ShootBullet(Context &ctx, Object &player, float dt) {
+    Object bullet = Object();
+    bullet.position = player.position;
+    bullet.render = Render(ctx, "Assets/bullet.png");
+    bullet.collider = Collider(bullet.render, {ColliderType::EVENT});
+
+    float speed = 10.0;
+    if (player.player.direction == Direction::LEFT) {
+        speed *= -1;
+    }
+    bullet.bullet = Bullet(Vector2{speed, 0}, 2.0);
+
+    Spawn(ctx, std::move(bullet));
+}
 
 // Задание UpdateBullet.
 //
