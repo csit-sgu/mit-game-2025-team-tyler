@@ -126,7 +126,12 @@ void ApplyGravity(Object &obj, float dt) {}
 // Возможное решение может занимать примерно 3 строки.
 // Ваше решение может сильно отличаться.
 //
-void MakeJump(Object &obj, float dt) {}
+void MakeJump(Object &obj, float dt) {
+if (obj.physics.can_jump) {
+        obj.physics.speed.y = 5.0f;
+        obj.physics.can_jump = false;
+    }
+}
 
 // Задание MoveCameraTowards.
 //
@@ -145,7 +150,7 @@ void MakeJump(Object &obj, float dt) {}
 // Возможное решение может занимать примерно 5 строк.
 // Ваше решение может сильно отличаться.
 //
-void MoveCameraTowards(Context &ctx, Object &obj, float dt) {}
+void MoveCameraTowards(Context & ctx, Object & obj, float dt) {}
 
 // Задание CheckPlayerDeath.
 //
@@ -162,7 +167,7 @@ void MoveCameraTowards(Context &ctx, Object &obj, float dt) {}
 //
 bool CheckPlayerDeath(Object &player, Scene &scene) {
     return false;
-}
+    }
 
 // Задание CheckFinish.
 //
