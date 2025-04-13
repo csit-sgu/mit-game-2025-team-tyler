@@ -212,7 +212,30 @@ bool CheckFinish(Object &player, Scene &scene) {
 // Возможное решение может занимать примерно 16-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void EnemyAI(Object &enemy, Scene &scene, float dt) {}
+void EnemyAI(Object &enemy, Scene &scene, float dt) {
+   
+    if (!enemy.texture_loaded) {
+        enemy.texture = LoadTexture("Assets/enemy1.png"); 
+        enemy.texture_loaded = true;
+        enemy.size = {50, 50}; 
+    }
+
+    Object *player = find_player(scene);
+    if (!player) {
+        return;
+    }
+
+    float direction = player->position.x - enemy.position.x;
+    float move = enemy.speed * dt;
+
+    if (direction < 0) {
+        enemy.position.x -= move;
+        enemy.direction = -1; 
+    } else if (direction > 0) {
+        enemy.position.x += move;
+        enemy.direction = 1;
+    }
+}
 
 // Задание PlayerControl.
 //
