@@ -115,11 +115,11 @@ void ApplyGravity(Object &obj, float dt) {
     }
     const float max_drop_speed = -125.0f;
     obj.physics.acceleration.y -= GRAVITY * dt * dt;
-    obj.physics.speed.y -= obj.physics.acceleration.y;
+    obj.physics.speed.y += obj.physics.acceleration.y;
     if (obj.physics.speed.y < max_drop_speed) {
         obj.physics.speed.y = max_drop_speed;
     }
-    obj.position.y -= obj.physics.speed.y * dt;
+    obj.position.y += obj.physics.speed.y * dt;
 }
 
 // Задание MakeJump.
