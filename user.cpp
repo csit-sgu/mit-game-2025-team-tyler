@@ -109,7 +109,18 @@ void FixCollisions(Scene &scene, float dt) {}
 // Возможное решение может занимать примерно 8-9 строки.
 // Ваше решение может сильно отличаться.
 //
-void ApplyGravity(Object &obj, float dt) {}
+void ApplyGravity(Object &obj, float dt) {
+    if (!obj.physics.enabled || !obj.collider.of_type(ColliderType::DYNAMIC)) {
+        return;
+    }
+    const float max_drop_speed = -125.0f;
+    obj.physics.acceleration.y -= GRAVITY * dt * dt;
+    obj.physics.speed.y += obj.physics.acceleration.y;
+    if (obj.physics.speed.y < max_drop_speed) {
+        obj.physics.speed.y = max_drop_speed;
+    }
+    obj.position.y += obj.physics.speed.y * dt;
+}
 
 // Задание MakeJump.
 //
@@ -213,27 +224,19 @@ bool CheckFinish(Object &player, Scene &scene) {
 // Ваше решение может сильно отличаться.
 //
 void EnemyAI(Object &enemy, Scene &scene, float dt) {
-   
-    if (!enemy.texture_loaded) {
-        enemy.texture = LoadTexture("Assets/enemy1.png"); 
-        enemy.texture_loaded = true;
-        enemy.size = {50, 50}; 
-    }
-
     Object *player = find_player(scene);
     if (!player) {
         return;
     }
 
-    float direction = player->position.x - enemy.position.x;
-    float move = enemy.speed * dt;
+    const float ENEMY_SPEED = 100.0f; // Фиксированная скорость
+    float distance = player->position.x - enemy.position.x;
+    float move = ENEMY_SPEED * dt;
 
-    if (direction < 0) {
+    if (distance < -4.0f) {
         enemy.position.x -= move;
-        enemy.direction = -1; 
-    } else if (direction > 0) {
+    } else if (distance > 4.0f) {
         enemy.position.x += move;
-        enemy.direction = 1;
     }
 }
 
@@ -522,7 +525,11 @@ void DrawMainScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void ConstructMenuScene(Context &ctx, Scene &game_scene) {}
+void ConstructMenuScene(Context &ctx, Scene &game_scene) {
+    Object bg;
+    bg.render = Render(ctx, "Assets/menu_background.png", ctx.screen_size);
+    game_scene.push_back(bg);
+}
 
 // Задание DrawStatus.
 //
