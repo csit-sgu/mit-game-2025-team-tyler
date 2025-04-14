@@ -146,13 +146,12 @@ void MakeJump(Object &obj, float dt) {}
 // Ваше решение может сильно отличаться.
 //
 void MoveCameraTowards(Context &ctx, Object &obj, float dt) {
-    Vector2 direction = obj.position - ctx.camera_pos; // ищем направление от камеры к объекту
-    float distance = Vector2Length(direction); // вычисляем дистанцию
-    Vector2 normalizedDirection = Vector2Normalize(direction); // нормализуем вектор направления, чтобы сделать его равным 1
-    // при необходимости скорость и дистанция до игрока будем изменена
+    Vector2 direction = obj.position - ctx.camera_pos;
+    float distance = Vector2Length(direction);
+    Vector2 normalizedDirection = Vector2Normalize(direction);
     if (distance > 0.4f) {
         float camera_move_distance = fmin(7.0f * dt, distance);
-        Vector2 movement = normalizedDirection * camera_move_distance; // перемножение
+        Vector2 movement = normalizedDirection * camera_move_distance;
         ctx.camera_pos = ctx.camera_pos + movement;
     }
 }
