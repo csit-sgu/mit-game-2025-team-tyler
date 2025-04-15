@@ -109,7 +109,18 @@ void FixCollisions(Scene &scene, float dt) {}
 // Возможное решение может занимать примерно 8-9 строки.
 // Ваше решение может сильно отличаться.
 //
-void ApplyGravity(Object &obj, float dt) {}
+void ApplyGravity(Object &obj, float dt) {
+    if (!obj.physics.enabled || !obj.collider.of_type(ColliderType::DYNAMIC)) {
+        return;
+    }
+    const float max_drop_speed = -125.0f;
+    obj.physics.acceleration.y -= GRAVITY * dt * dt;
+    obj.physics.speed.y += obj.physics.acceleration.y;
+    if (obj.physics.speed.y < max_drop_speed) {
+        obj.physics.speed.y = max_drop_speed;
+    }
+    obj.position.y += obj.physics.speed.y * dt;
+}
 
 // Задание MakeJump.
 //
@@ -508,7 +519,11 @@ void DrawMainScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void ConstructMenuScene(Context &ctx, Scene &game_scene) {}
+void ConstructMenuScene(Context &ctx, Scene &game_scene) {
+    Object bg;
+    bg.render = Render(ctx, "Assets/menu_background.png", ctx.screen_size);
+    game_scene.push_back(bg);
+}
 
 // Задание DrawStatus.
 //
