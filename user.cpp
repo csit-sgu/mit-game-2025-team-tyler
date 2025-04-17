@@ -128,7 +128,7 @@ void ApplyGravity(Object &obj, float dt) {}
 //
 void MakeJump(Object &obj, float dt) {
 if (obj.physics.can_jump) {
-        obj.physics.speed.y = 5.0f;
+        obj.physics.speed.y = 15.0f;
         obj.physics.can_jump = false;
     }
 }
