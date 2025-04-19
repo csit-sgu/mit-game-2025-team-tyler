@@ -450,7 +450,36 @@ void ApplyOnSpawn(Context &ctx, Object &obj) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawDeathScreen(Context &ctx) {}
+void DrawDeathScreen(Context &ctx) {
+
+    if (!CheckPlayerDeath) {
+        return; 
+    }
+
+    const char *deathText = "YOU DIED";
+    int fontSize = 50;
+
+    int textWidth = MeasureText(deathText, fontSize);
+    int textX = GetScreenWidth() / 2 - textWidth / 2;
+    int textY = GetScreenHeight() / 2 - fontSize / 2;
+
+    DrawRectangle(
+        0, 0, GetScreenWidth(), GetScreenHeight(), Color{40, 0, 0, 200}
+    );
+
+    DrawText(deathText, textX, textY, fontSize, Color{220, 20, 20, 255});
+
+    const char *hintText = "Press ENTER to restart";
+    int hintSize = 20;
+    int hintWidth = MeasureText(hintText, hintSize);
+    DrawText(
+        hintText,
+        GetScreenWidth() / 2 - hintWidth / 2,
+        textY + 80,
+        hintSize,
+        LIGHTGRAY
+    );
+}
 
 // Задание DrawGameOverScreen.
 //
