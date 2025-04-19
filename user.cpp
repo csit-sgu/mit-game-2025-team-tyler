@@ -23,7 +23,19 @@
 // Ваше решение может сильно отличаться.
 //
 Collision CheckCollision(Object &obj1, Object &obj2) {
-    return Collision{};
+    Vector2 distance_between_obj = obj2.position - obj1.position;
+    float half_width = (obj1.collider.width + obj2.collider.width) / 2;
+    float half_height = (obj1.collider.height + obj2.collider.height) / 2;
+
+    Vector2 q;
+    q.x = abs(distance_between_obj.x) - half_width;
+    q.y = abs(distance_between_obj.y) - half_height;
+
+    if (q.x < 0 && q.y < 0) {
+        return Collision{true, q};
+    } else {
+        return Collision{false, {0, 0}};
+    }
 }
 
 // Задание SolveCollision.
@@ -161,7 +173,7 @@ void MoveCameraTowards(Context &ctx, Object &obj, float dt) {
     float distance = Vector2Length(direction);
     Vector2 normalizedDirection = Vector2Normalize(direction);
     if (distance > 0.4f) {
-        float camera_move_distance = fmin(7.0f * dt, distance);
+        float camera_move_distance = fmin(10.0f * dt, distance);
         Vector2 movement = normalizedDirection * camera_move_distance;
         ctx.camera_pos = ctx.camera_pos + movement;
     }
