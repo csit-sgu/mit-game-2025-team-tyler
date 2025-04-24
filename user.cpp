@@ -482,7 +482,20 @@ void DrawGameOverScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawFinishScreen(Context &ctx) {}
+void DrawFinishScreen(Context &ctx) {
+    if (CheckFinish){ 
+        const char *winText = "YOU WIN!";
+        int fontSize = 50;
+        int rectWidth= ctx.screen_size.x; 
+        int rectHeight= ctx.screen_size.y;
+        int textWidth = MeasureText(winText, fontSize);
+        int textX = (rectWidth - textWidth) / 2;
+        int textY = (rectHeight - fontSize) / 2;
+
+        DrawRectangle(0, 0, rectWidth, rectHeight, Fade(BLACK, 0.7f));
+        DrawText(winText, textX, textY, fontSize, WHITE);
+    }
+}
 
 // Задание DrawMainScreen.
 //
