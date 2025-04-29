@@ -451,11 +451,6 @@ void ApplyOnSpawn(Context &ctx, Object &obj) {}
 // Возможное решение может занимать примерно N строк.
 //
 void DrawDeathScreen(Context &ctx) {
-
-    if (!CheckPlayerDeath) {
-        return; 
-    }
-
     const char *deathText = "YOU DIED";
     int fontSize = 50;
 
