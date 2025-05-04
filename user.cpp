@@ -89,8 +89,7 @@ void FixCollisions(Scene &scene, float dt) {
         {
             for (Object &obj_second : scene) {
                 if (obj_first != obj_second && obj_second.collider.enabled
-                        && obj_second.collider.of_type(ColliderType::DYNAMIC)
-                    || obj_second.collider.of_type(ColliderType::STATIC))
+                        && !obj_second.collider.of_type(ColliderType::EVENT))
                 {
                     Collision c = CheckCollision(obj_first, obj_second);
                     SolveCollision(obj_first, c, dt);
