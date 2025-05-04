@@ -466,7 +466,13 @@ void DrawDeathScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawGameOverScreen(Context &ctx) {}
+void DrawGameOverScreen(Context &ctx) {
+    const char *text = "GAME OVER";
+    int fontSize = 40;
+    int textWidth = MeasureText(text, fontSize);
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.7f));
+    DrawText(text,GetScreenWidth() / 2 - textWidth / 2,GetScreenHeight() / 2 - fontSize / 2,fontSize,RED);
+}
 
 // Задание DrawFinishScreen.
 //
