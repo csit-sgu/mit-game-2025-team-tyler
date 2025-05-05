@@ -406,7 +406,22 @@ void UpdateBullet(Context &ctx, Object &obj, float dt) {
 //
 // Возможное решение может занимать примерно 14-20 строк.
 //
-void KillEnemies(Context &ctx) {}
+void KillEnemies(Context &ctx) {
+    for (Object &obj_enemy : ctx.current_scene) {
+        if (obj_enemy.enemy.enabled) {
+            for (Object &obj_bullet : ctx.current_scene) {
+                if (obj_bullet.bullet.enabled) {
+                    Collision c = CheckCollision (obj_enemy, obj_bullet);
+                    if (c.exists) {
+                        Destroy(ctx, obj_bullet);
+                        Destroy(ctx, obj_enemy);
+                        ApplyOnDeath(ctx, obj_enemy);
+                    }
+                }
+            }
+        }
+    }
+}
 
 // Задание ApplyOnDeath.
 //
