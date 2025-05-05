@@ -109,7 +109,18 @@ void FixCollisions(Scene &scene, float dt) {}
 // Возможное решение может занимать примерно 8-9 строки.
 // Ваше решение может сильно отличаться.
 //
-void ApplyGravity(Object &obj, float dt) {}
+void ApplyGravity(Object &obj, float dt) {
+    if (!obj.physics.enabled || !obj.collider.of_type(ColliderType::DYNAMIC)) {
+        return;
+    }
+    const float max_drop_speed = -125.0f;
+    obj.physics.acceleration.y -= GRAVITY * dt * dt;
+    obj.physics.speed.y += obj.physics.acceleration.y;
+    if (obj.physics.speed.y < max_drop_speed) {
+        obj.physics.speed.y = max_drop_speed;
+    }
+    obj.position.y += obj.physics.speed.y * dt;
+}
 
 // Задание MakeJump.
 //
@@ -127,7 +138,7 @@ void ApplyGravity(Object &obj, float dt) {}
 // Ваше решение может сильно отличаться.
 //
 void MakeJump(Object &obj, float dt) {
-if (obj.physics.can_jump) {
+    if (obj.physics.can_jump) {
         obj.physics.speed.y = 15.0f;
         obj.physics.can_jump = false;
     }
@@ -150,7 +161,16 @@ if (obj.physics.can_jump) {
 // Возможное решение может занимать примерно 5 строк.
 // Ваше решение может сильно отличаться.
 //
-void MoveCameraTowards(Context & ctx, Object & obj, float dt) {}
+void MoveCameraTowards(Context &ctx, Object &obj, float dt) {
+    Vector2 direction = obj.position - ctx.camera_pos;
+    float distance = Vector2Length(direction);
+    Vector2 normalizedDirection = Vector2Normalize(direction);
+    if (distance > 0.4f) {
+        float camera_move_distance = fmin(7.0f * dt, distance);
+        Vector2 movement = normalizedDirection * camera_move_distance;
+        ctx.camera_pos = ctx.camera_pos + movement;
+    }
+}
 
 // Задание CheckPlayerDeath.
 //
@@ -167,7 +187,7 @@ void MoveCameraTowards(Context & ctx, Object & obj, float dt) {}
 //
 bool CheckPlayerDeath(Object &player, Scene &scene) {
     return false;
-    }
+}
 
 // Задание CheckFinish.
 //
@@ -217,7 +237,20 @@ bool CheckFinish(Object &player, Scene &scene) {
 // Возможное решение может занимать примерно 16-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void EnemyAI(Object &enemy, Scene &scene, float dt) {}
+void EnemyAI(Object &enemy, Scene &scene, float dt) {
+    Object *player = find_player(scene);
+    if (!player) {
+        return;
+    }
+    float distance = player->position.x - enemy.position.x;
+    float move = enemy.enemy.speed * dt;
+
+    if (distance < -4.0f) {
+        enemy.position.x -= move;
+    } else if (distance > 4.0f) {
+        enemy.position.x += move;
+    }
+}
 
 // Задание PlayerControl.
 //
@@ -247,7 +280,30 @@ void EnemyAI(Object &enemy, Scene &scene, float dt) {}
 // Возможное решение может занимать примерно 16-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void PlayerControl(Context &ctx, Object &player, float dt) {}
+void PlayerControl(Context &ctx, Object &player, float dt) {
+    if (ctx.input_blocked) {
+        return;
+    }
+    if (IsKeyDown(KEY_SPACE)) {
+        MakeJump(player, dt);
+    }
+    if (IsKeyPressed(KEY_J)) {
+        ShootBullet(ctx, player, dt);
+    }
+    Vector2 move = {0, 0};
+    if (IsKeyDown(KEY_D)) {
+        move.x += 1;
+    }
+    if (IsKeyDown(KEY_A)) {
+        move.x -= 1;
+    }
+    if (move.x > 0) {
+        player.player.direction = Direction::RIGHT;
+    } else if (move.x < 0) {
+        player.player.direction = Direction::LEFT;
+    }
+    player.position += move * player.player.speed * dt;
+}
 
 // Задание ShootBullet.
 //
@@ -286,7 +342,20 @@ void PlayerControl(Context &ctx, Object &player, float dt) {}
 //
 // Возможное решение может занимать примерно 8-10 строк.
 //
-void ShootBullet(Context &ctx, Object &player, float dt) {}
+void ShootBullet(Context &ctx, Object &player, float dt) {
+    Object bullet = Object();
+    bullet.position = player.position;
+    bullet.render = Render(ctx, "Assets/bullet.png");
+    bullet.collider = Collider(bullet.render, {ColliderType::EVENT});
+
+    float speed = 10.0;
+    if (player.player.direction == Direction::LEFT) {
+        speed *= -1;
+    }
+    bullet.bullet = Bullet(Vector2{speed, 0}, 2.0);
+
+    Spawn(ctx, std::move(bullet));
+}
 
 // Задание UpdateBullet.
 //
@@ -312,7 +381,13 @@ void ShootBullet(Context &ctx, Object &player, float dt) {}
 // Возможное решение может занимать примерно 4-5 строк.
 // Ваше решение может сильно отличаться.
 //
-void UpdateBullet(Context &ctx, Object &obj, float dt) {}
+void UpdateBullet(Context &ctx, Object &obj, float dt) {
+    obj.position.x += obj.bullet.speed.x * dt;
+    obj.bullet.lifetime += dt;
+    if (obj.bullet.lifetime > obj.bullet.max_lifetime) {
+        Destroy(ctx, obj);
+    }
+}
 
 // Задание KillEnemies.
 //
@@ -336,7 +411,22 @@ void UpdateBullet(Context &ctx, Object &obj, float dt) {}
 //
 // Возможное решение может занимать примерно 14-20 строк.
 //
-void KillEnemies(Context &ctx) {}
+void KillEnemies(Context &ctx) {
+    for (Object &obj_enemy : ctx.current_scene) {
+        if (obj_enemy.enemy.enabled) {
+            for (Object &obj_bullet : ctx.current_scene) {
+                if (obj_bullet.bullet.enabled) {
+                    Collision c = CheckCollision(obj_enemy, obj_bullet);
+                    if (c.exists) {
+                        Destroy(ctx, obj_bullet);
+                        Destroy(ctx, obj_enemy);
+                        ApplyOnDeath(ctx, obj_enemy);
+                    }
+                }
+            }
+        }
+    }
+}
 
 // Задание ApplyOnDeath.
 //
@@ -468,7 +558,11 @@ void DrawMainScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void ConstructMenuScene(Context &ctx, Scene &game_scene) {}
+void ConstructMenuScene(Context &ctx, Scene &game_scene) {
+    Object bg;
+    bg.render = Render(ctx, "Assets/menu_background.png", ctx.screen_size);
+    game_scene.push_back(bg);
+}
 
 // Задание DrawStatus.
 //
