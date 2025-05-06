@@ -32,6 +32,12 @@ Collision CheckCollision(Object &obj1, Object &obj2) {
     q.y = abs(distance_between_obj.y) - half_height;
 
     if (q.x < 0 && q.y < 0) {
+        if (obj1.physics.speed.x < 0) {
+            q.x = -(q.x);
+        }
+        if (obj1.physics.speed.y < 0) {
+            q.y = -(q.y);
+        }
         return Collision{true, q};
     } else {
         return Collision{false, {0, 0}};
