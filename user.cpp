@@ -585,4 +585,30 @@ void ConstructMenuScene(Context &ctx, Scene &game_scene) {
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawStatus(Context &ctx) {}
+void DrawStatus(Context &ctx) {
+    DrawRectangle(0, 0, ctx.screen_size.x, 50, BLACK);
+    Texture heart_texture = ctx.textures_storage[ctx.heart->hash];
+    float heart_x = 10.0f;
+    for (int i = 0; i < ctx.lives; i++) {
+        DrawTexture(heart_texture, heart_x, 10, WHITE);
+        heart_x += 35.0f;
+    }
+    char score_text[32];
+    snprintf(score_text, sizeof(score_text), "Score: %d", ctx.score);
+    int score_width = MeasureText(score_text, 20);
+    DrawText(
+        score_text, ctx.screen_size.x / 2 - score_width / 2, 15, 20, WHITE
+    );
+    uint64_t total_seconds = ctx.time / 1000;
+    uint64_t minutes = total_seconds / 60;
+    uint64_t seconds = total_seconds % 60;
+    const char *time_text
+        = TextFormat("Time: %02i:%02i", (int) minutes, (int) seconds);
+    DrawText(
+        time_text,
+        ctx.screen_size.x - MeasureText(time_text, 20) - 10,
+        15,
+        20,
+        WHITE
+    );
+}
