@@ -50,14 +50,13 @@ void SolveCollision(Object &obj, Collision c, float dt) {
     if (!c.exists) {
         return;
     }
-    if (std::abs(c.overlap.x) > std::abs(c.overlap.y)) {
-        obj.position.x += c.overlap.x;
+    if (std::abs(c.overlap.x) < std::abs(c.overlap.y)) {
+        obj.position.x -= c.overlap.x;
     } else {
-        obj.position.y += c.overlap.y;
+        obj.position.y -= c.overlap.y;
         if (c.overlap.y < 0) {
-            obj.physics.speed.y = 0;
-            obj.physics.acceleration.y = 0;
             if (obj.physics.speed.y < 0) {
+                obj.physics.speed.y = 0;
                 obj.physics.can_jump = true;
             }
         } else if (c.overlap.y > 0) {
