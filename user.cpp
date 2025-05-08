@@ -528,7 +528,28 @@ void DrawFinishScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawMainScreen(Context &ctx) {}
+void DrawMainScreen(Context &ctx) {
+    const char *title = "MITcraft";
+    int titlefontsize = 130;
+    int titlewidth = MeasureText(title, titlefontsize);
+    DrawText(
+        title,
+        (ctx.screen_size.x - titlewidth) / 2,
+        ctx.screen_size.y / 3,
+        titlefontsize,
+        WHITE
+    );
+    const char *entertext = "PRESS ENTER TO START";
+    int textfontsize = 40;
+    int textwidth = MeasureText(entertext, textfontsize);
+    DrawText(
+        entertext,
+        (ctx.screen_size.x - textwidth) / 2,
+        ctx.screen_size.y * 2 / 3,
+        textfontsize,
+        WHITE
+    );
+}
 
 // Задание ConstructMenuScene.
 //
