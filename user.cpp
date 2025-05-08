@@ -33,10 +33,10 @@ Collision CheckCollision(Object &obj1, Object &obj2) {
 
     if (q.x < 0 && q.y < 0) {
         if (obj1.physics.speed.x < 0) {
-            q.x = -(q.x);
+            q.x = -abs(q.x);
         }
         if (obj1.physics.speed.y < 0) {
-            q.y = -(q.y);
+            q.y = -abs(q.y);
         }
         return Collision{true, q};
     } else {
