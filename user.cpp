@@ -137,7 +137,12 @@ void ApplyGravity(Object &obj, float dt) {
 // Возможное решение может занимать примерно 3 строки.
 // Ваше решение может сильно отличаться.
 //
-void MakeJump(Object &obj, float dt) {}
+void MakeJump(Object &obj, float dt) {
+    if (obj.physics.can_jump) {
+        obj.physics.speed.y = 15.0f;
+        obj.physics.can_jump = false;
+    }
+}
 
 // Задание MoveCameraTowards.
 //
@@ -411,7 +416,7 @@ void KillEnemies(Context &ctx) {
         if (obj_enemy.enemy.enabled) {
             for (Object &obj_bullet : ctx.current_scene) {
                 if (obj_bullet.bullet.enabled) {
-                    Collision c = CheckCollision (obj_enemy, obj_bullet);
+                    Collision c = CheckCollision(obj_enemy, obj_bullet);
                     if (c.exists) {
                         Destroy(ctx, obj_bullet);
                         Destroy(ctx, obj_enemy);
