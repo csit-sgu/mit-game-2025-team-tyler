@@ -201,6 +201,11 @@ bool CheckPlayerDeath(Object &player, Scene &scene) {
 // Ваше решение может сильно отличаться.
 //
 bool CheckFinish(Object &player, Scene &scene) {
+    for (Object &obj : scene) {
+        if (obj.finish.enabled && CheckCollision(player, obj).exists) {
+            return true;
+        }
+    }
     return false;
 }
 
